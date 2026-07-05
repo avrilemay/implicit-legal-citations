@@ -1,0 +1,19 @@
+# Regenerated pipeline artifacts (not shipped — see DATA.md)
+artifacts/
+
+# Python / Jupyter
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Environments & secrets
+.env
+.env.*
+.venv/
+venv/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
