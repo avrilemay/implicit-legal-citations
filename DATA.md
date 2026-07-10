@@ -42,6 +42,17 @@ All prediction arrays are aligned row-for-row to `benchmark.csv` (length 1,015).
 
 The 100 pairs rejected by the o3 adversarial filter, re-annotated by A1/A2/A3, of which **0** were judged implicit — bounding the false-negative risk introduced by the filter.
 
+### `DATA/outputs/fp_error_annotation.csv` — false-positive error analysis (25 pairs)
+
+Manual failure-mode annotation of a random sample of 25 of the supervised ensemble's 66 false positives (quantitative error analysis appendix). One row per pair, keyed like `benchmark.csv`.
+
+| Column | Meaning |
+|---|---|
+| `decision_id`, `chunk_id`, `pred_art` | Pair key, as in `benchmark.csv`. |
+| `failure_mode` | `statutory_language_not_applied` (statutory language present in the chunk but not applied by the court), `wrong_rule` (right legal domain, wrong article or regime), or `other`. |
+
+The sample draw and the appendix table are reproduced by `CODE/analysis/error_analysis.ipynb`.
+
 ### `docs/annotation_guide_bilingual.pdf`
 
 The bilingual (French/English) guidelines given to the annotators.

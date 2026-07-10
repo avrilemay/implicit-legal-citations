@@ -46,6 +46,7 @@ The per-experiment notebooks that produced the results in each section/appendix.
 | `analysis/bge_reranker_finetuning.ipynb` | App. T | BGE-reranker fine-tuned cross-encoder baseline. |
 | `analysis/confound_analysis.ipynb` | App. O | Surface-confound controls (nested cluster-robust logistic regressions). |
 | `analysis/sensitivity_analysis.ipynb` | App. R | Sensitivity of the unsupervised ranking to its weights. |
+| `analysis/error_analysis.ipynb` | App. (error analysis) | Failure-mode annotation of 25 sampled false positives: reproducible sample draw and failure-mode table. |
 
 ## Reproducing the paper's results
 
