@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+message: "If you use this benchmark, code or model, please cite the paper below."
+title: "Where Experts Disagree, Models Fail: Detecting Implicit Legal Citations in French Court Decisions (code and data)"
+type: software
+license: MIT
+repository-code: "https://github.com/avrilemay/implicit-legal-citations"
+authors:
+  - family-names: Floro
+    given-names: Avrile
+    affiliation: "Télécom Paris, Institut Polytechnique de Paris"
+  - family-names: Dhorasoo
+    given-names: Tamara
+    affiliation: "Université Polytechnique Hauts-de-France"
+  - family-names: Pellez
+    given-names: Soline
+    affiliation: "Université Polytechnique Hauts-de-France"
+  - family-names: Holzenberger
+    given-names: Nils
+    affiliation: "Télécom Paris, Institut Polytechnique de Paris"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.21206799
+    description: "Trained bi-encoder, benchmark, chunked corpus and raw decisions (Zenodo)"
+keywords:
+  - legal NLP
+  - French Civil Code
+  - implicit citation detection
+  - annotator disagreement
+preferred-citation:
+  type: conference-paper
+  title: "Where Experts Disagree, Models Fail: Detecting Implicit Legal Citations in French Court Decisions"
+  authors:
+    - family-names: Floro
+      given-names: Avrile
+    - family-names: Dhorasoo
+      given-names: Tamara
+    - family-names: Pellez
+      given-names: Soline
+    - family-names: Holzenberger
+      given-names: Nils
+  collection-title: "Proceedings of the Natural Legal Language Processing Workshop 2026"
+  publisher:
+    name: "Association for Computational Linguistics"
+  year: 2026
+  identifiers:
+    - type: other
+      value: "arXiv:2603.22973"
+  url: "https://arxiv.org/abs/2603.22973"

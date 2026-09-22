@@ -1,71 +1,84 @@
 # Where Experts Disagree, Models Fail: Detecting Implicit Legal Citations in French Court Decisions
 
-Data and code for the benchmark and experiments in the paper. We release **1,015 (chunk, article) pairs** drawn from French first-instance civil decisions (Judilibre). A JuriBERT bi-encoder is trained on *explicit* French Civil Code citations and used to retrieve *implicit*-citation candidates; candidates are filtered adversarially with OpenAI o3, and three legal annotators (A1, A2, A3) label the survivors. The benchmark, every model prediction reported in the paper, the reference legal data, and a bounding-risk study are all shipped in `DATA/`. `CODE/` holds the full data pipeline (`pipeline/`), the per-experiment notebooks behind each paper section and appendix (`analysis/`), and a self-contained notebook that reproduces every table from the shipped data (`reproduce/`).
+**Avrile Floro**¹, **Tamara Dhorasoo**², **Soline Pellez**², **Nils Holzenberger**¹
+¹ Télécom Paris, Institut Polytechnique de Paris · ² Université Polytechnique Hauts-de-France
+
+Natural Legal Language Processing Workshop (NLLP 2026) · [arXiv:2603.22973](https://arxiv.org/abs/2603.22973) · Model and data: [doi:10.5281/zenodo.21206799](https://doi.org/10.5281/zenodo.21206799)
+
+Data and code for the benchmark and experiments in the paper. We release **1,015 (chunk, article) pairs** (829 decisions, 418 French Civil Code articles) drawn from 182,155 first-instance civil decisions published on Judilibre (December 2023 to July 2025). A JuriBERT bi-encoder trained on *explicit* Civil Code citations retrieves 40,566 *implicit*-citation candidates; OpenAI o3, used as a conservative adversarial filter, accepts 4,206 of them, from which the 1,015 pairs were selected for annotation (§3). Two legal annotators (A1, A2) label every pair and a third (A3) adjudicates their 339 disagreements (§4).
+
+This repository ships the benchmark, the per-row predictions behind §5.1, §5.2 and §6, the reference legal data, and the bounding-risk study (`DATA/`). `CODE/` holds the full data pipeline (`pipeline/`), the per-experiment notebooks behind each section and appendix (`analysis/`), and a self-contained notebook that rebuilds the paper's main data-backed tables from the shipped data (`reproduce/`). The trained bi-encoder, the chunked training corpus and the raw decisions are too large for GitHub and are archived on [Zenodo](https://doi.org/10.5281/zenodo.21206799).
 
 ## Repository layout
 
 ```
 implicit-legal-citations/
-├── README.md · DATA.md · LICENSE · requirements.txt · .gitignore
+├── README.md · DATA.md · LICENSE · CITATION.cff
+├── requirements.txt · requirements-reproduce.txt
 ├── CODE/
-│   ├── pipeline/    01 → 07, the full pipeline that regenerates held-back artifacts
+│   ├── pipeline/    01 → 07, the full pipeline that regenerates the large artifacts
 │   ├── analysis/    per-experiment notebooks behind each paper section/appendix
-│   └── reproduce/   08_reproduce_results.ipynb, reproduces the paper's tables
+│   └── reproduce/   08_reproduce_results.ipynb, rebuilds the paper's tables
 ├── DATA/
 │   ├── inputs/      reference legal data
-│   └── outputs/     benchmark + all predictions + bounding-risk study (see DATA.md)
+│   └── outputs/     benchmark + predictions + bounding-risk study (see DATA.md)
 └── docs/            annotation_guide_bilingual.pdf
 ```
 
 ## Code
 
-Each stage is a self-contained Jupyter notebook. Run notebooks **from the repository root** so that the relative paths to `DATA/` (and to the held-back `artifacts/` folder) resolve.
+Each stage is a self-contained Jupyter notebook. Notebooks locate the repository root on their own, so they can be opened from anywhere inside the repository; paths to `DATA/` and to the local `artifacts/` folder resolve from the root.
 
 | Notebook | Stage | What it does |
 |---|---|---|
 | `CODE/pipeline/01_data_collection.ipynb` | Collection | Pulls first-instance civil decisions from the Judilibre API into a raw corpus. |
-| `CODE/pipeline/02_article_retrieval.ipynb` | Article retrieval | Fetches and normalises the French Civil Code from Légifrance; builds the reference article tables and old→new numbering equivalences. |
-| `CODE/pipeline/03_dataset_creation.ipynb` | Dataset creation | Chunks decisions, mines explicit Civil Code citations, and assembles the (chunk, article) candidate pairs plus TF-IDF features. |
-| `CODE/pipeline/04_model_training.ipynb` | Model training | Trains the JuriBERT bi-encoder on explicit citations and writes the encoder checkpoints. |
-| `CODE/pipeline/05_inference.ipynb` | Inference | Embeds chunks and articles, runs FAISS retrieval, and produces the implicit-citation candidate set. |
-| `CODE/pipeline/06_analysis.ipynb` | Analysis | Computes metrics, inter-annotator agreement, and the paper's figures and tables. |
-| `CODE/pipeline/07_adversarial_filter_o3.ipynb` | Adversarial filter | Filters retrieved candidates with OpenAI o3 to keep only the hard, plausibly-implicit cases sent for annotation. |
-| `CODE/reproduce/08_reproduce_results.ipynb` | Reproduce results | Rebuilds **all** of the paper's tables from the shipped `DATA/outputs/` alone — no pipeline run, no API access, no GPU. |
+| `CODE/pipeline/02_article_retrieval.ipynb` | Article retrieval | Fetches and normalises the French Civil Code from Légifrance; builds the reference article tables and old→new numbering equivalences (App. B). |
+| `CODE/pipeline/03_dataset_creation.ipynb` | Dataset creation | Chunks decisions, mines explicit Civil Code citations, and assembles the (chunk, article) candidate pairs plus TF-IDF features (App. A). |
+| `CODE/pipeline/04_model_training.ipynb` | Model training | Trains the JuriBERT bi-encoder on explicit citations and writes the encoder checkpoints (§3.2, App. A). |
+| `CODE/pipeline/05_inference.ipynb` | Inference | Embeds chunks and articles, runs FAISS retrieval, and produces the implicit-citation candidate set (§3.3). |
+| `CODE/pipeline/06_analysis.ipynb` | Descriptive statistics | Statistics of the corpus, training data and predictions; distribution of the benchmark across Civil Code books (Table 1). |
+| `CODE/pipeline/07_adversarial_filter_o3.ipynb` | Adversarial filter | Filters retrieved candidates with OpenAI o3 to keep only the hard, plausibly-implicit cases sent for annotation (§3.4, App. C). |
+| `CODE/reproduce/08_reproduce_results.ipynb` | Reproduce results | Rebuilds the paper's main data-backed tables from the shipped `DATA/outputs/` alone: no pipeline run, no API access, no GPU. |
 
 ### Analysis notebooks (`CODE/analysis/`)
 
-The per-experiment notebooks that produced the results in each section/appendix. They read the shipped `DATA/` (labels from `DATA/outputs/benchmark.csv`, predictions from `DATA/outputs/predictions/`) and write their heavy intermediate artifacts under a local `artifacts/` folder. Several require a GPU (fine-tuning) and the held-back data, so they are provided for transparency rather than one-click execution — the reported numbers themselves are reproduced end-to-end by `08_reproduce_results.ipynb`.
+The per-experiment notebooks that produced the results in each section and appendix. They read the shipped `DATA/` (labels from `DATA/outputs/benchmark.csv`, predictions from `DATA/outputs/predictions/`) and write their heavy intermediate artifacts under a local `artifacts/` folder. Several require a GPU (fine-tuning, LLM inference) and the large artifacts, so they are provided for transparency rather than one-click execution; the reported numbers are checked end to end by `08_reproduce_results.ipynb`.
 
 | Notebook | Paper part | What it does |
 |---|---|---|
-| `analysis/inter_annotator_agreement.ipynb` | §4 | Inter-annotator agreement (Cohen's κ), confusion matrix, A3 adjudication structure. |
-| `analysis/supervised_encoders.ipynb` | §5.1 | Frozen-encoder classifiers and the stacking ensemble (grid search, nested CV). |
-| `analysis/zeroshot_llm_evaluation.ipynb` | §5.2 | Zero-shot evaluation of the ten instruction-tuned LLMs. |
-| `analysis/unsupervised_ranking.ipynb`, `unsupervised_ranking_full.ipynb` | §5.3 | Unsupervised top-k ranking via LLM consensus (average precision, recall at k). |
-| `analysis/nli_baseline_finetuning.ipynb` | App. S | XLM-R-XNLI fine-tuned entailment baseline. |
-| `analysis/bge_reranker_finetuning.ipynb` | App. T | BGE-reranker fine-tuned cross-encoder baseline. |
-| `analysis/confound_analysis.ipynb` | App. O | Surface-confound controls (nested cluster-robust logistic regressions). |
-| `analysis/sensitivity_analysis.ipynb` | App. R | Sensitivity of the unsupervised ranking to its weights. |
-| `analysis/error_analysis.ipynb` | App. (error analysis) | Failure-mode annotation of the ensemble's 66 false positives and the failure-mode table. |
+| `analysis/inter_annotator_agreement.ipynb` | §4, App. F (Tables 2, 9) | Inter-annotator agreement (Cohen's κ), confusion matrix, A3 adjudication structure. Later cells hold exploratory runs that are not reported in the paper. |
+| `analysis/supervised_encoders.ipynb` | §5.1, §6; App. G, H, P, Q, S | Frozen-encoder classifiers and the stacking ensemble (grid search, nested CV); false-positive and false-negative rates by agreement (Figure 3, Tables 25, 29) and calibration (Tables 26–27). |
+| `analysis/zeroshot_llm_evaluation.ipynb` | §5.2; App. K, L | Zero-shot evaluation of the ten instruction-tuned LLMs. |
+| `analysis/unsupervised_ranking.ipynb`, `unsupervised_ranking_full.ipynb` | §5.3; App. O (Tables 5, 6, 21–24) | Unsupervised top-k ranking via LLM consensus (average precision, precision and recall at k). |
+| `analysis/sensitivity_analysis.ipynb` | App. N | Sensitivity of the unsupervised ranking to its weights. |
+| `analysis/bge_reranker_finetuning.ipynb` | App. I (Table 15) | BGE-reranker-v2-m3 fine-tuned cross-encoder baseline. |
+| `analysis/nli_baseline_finetuning.ipynb` | App. J (Table 16) | XLM-R-XNLI fine-tuned entailment baseline. |
+| `analysis/confound_analysis.ipynb` | App. R (Table 28) | Surface-confound controls (nested cluster-robust logistic regressions). |
+| `analysis/error_analysis.ipynb` | App. U (Table 30) | Failure-mode annotation of the ensemble's 66 false positives. |
+
+The retrieval-augmented few-shot experiment (App. M, Table 20) is shipped as summary scores only (`DATA/outputs/predictions/fewshot/fewshot_results.csv`).
 
 ## Reproducing the paper's results
 
 ```bash
-pip install -r requirements.txt
-jupyter notebook CODE/reproduce/08_reproduce_results.ipynb   # run from the repo root
+pip install -r requirements-reproduce.txt
+jupyter nbconvert --to notebook --execute --inplace CODE/reproduce/08_reproduce_results.ipynb
+# or open it interactively: jupyter notebook CODE/reproduce/08_reproduce_results.ipynb
 ```
 
-`08_reproduce_results.ipynb` reads **only** the files already in `DATA/outputs/` (the benchmark, all model predictions, and the bounding-risk study). It needs no API access, no GPU, and no regeneration step, and reproduces the headline metrics, per-agreement error breakdowns, ensemble numbers, and baselines end to end.
+`08_reproduce_results.ipynb` reads **only** the files already in `DATA/outputs/`. It needs no API access, no GPU and no regeneration step, runs in a few seconds, and prints a computed-vs-paper check for every number it rebuilds.
 
-To rerun the full pipeline from scratch instead, execute `CODE/pipeline/01`→`07` in order; these notebooks regenerate the held-back intermediate artifacts described in [DATA.md](DATA.md).
+To rerun the full pipeline from scratch instead, install `requirements.txt` and execute `CODE/pipeline/01`→`07` in order; these notebooks regenerate the large intermediate artifacts described in [DATA.md](DATA.md). To skip collection and training (01–04), download the trained bi-encoder and the chunked corpus from [Zenodo](https://doi.org/10.5281/zenodo.21206799).
 
 ### Reproducibility notes
 
-`08_reproduce_results.ipynb` prints a computed-vs-paper check for every table and reproduces all of the paper's data-backed numbers exactly: the nine supervised systems and the ensemble (F1, MCC, and the per-agreement odds ratios), the ten zero-shot LLMs, the retrieval-augmented few-shot table, the two fine-tuned baselines (XLM-R-NLI and BGE-reranker), the per-agreement false-positive analysis with FDR correction, the surface-confound controls, the calibration errors, and the bounding-risk study. Each decision threshold is the one used in the corresponding experiment (supervised thresholds tuned by nested CV; the XLM-R-NLI baseline by max-MCC over a coarse threshold grid; the BGE cross-encoder by its two-class argmax).
+`08_reproduce_results.ipynb` reproduces exactly: the A1×A2 confusion matrix and A3 adjudication (Tables 2, 9); the nine supervised systems and the ensemble (Tables 3, 11, 12, 14); the ten zero-shot LLMs (Tables 4, 17); the retrieval-augmented few-shot scores (Table 20); the two fine-tuned baselines (Tables 15, 16); false positives by agreement and the per-model odds ratios with FDR correction (Table 7, Table 25, Figure 3); the surface-confound controls (Table 28); the ensemble's calibration (Tables 26–27); and the bounding-risk study (§3.6). Each decision threshold is the one used in the corresponding experiment (supervised thresholds tuned by nested CV; the XLM-R-NLI baseline by max-MCC over a coarse threshold grid; the BGE cross-encoder by its two-class argmax).
+
+The unsupervised ranking of §5.3 (Tables 5, 6, 21–24) and the descriptive statistics (Tables 1, 8) are produced by the corresponding analysis and pipeline notebooks rather than by `08`.
 
 ## Configuration
 
-The pipeline notebooks (`01`, `02`, `07`) call external APIs. Provide credentials through environment variables — none are stored in the repository:
+The pipeline notebooks (`01`, `02`, `07`) call external APIs. Provide credentials through environment variables; none are stored in the repository:
 
 | Variable | Used by |
 |---|---|
@@ -78,8 +91,38 @@ The reproduction notebook (`08`) uses none of these.
 
 ## Data availability
 
-See [DATA.md](DATA.md) for a precise inventory of what is shipped versus what is held back and regenerated by the pipeline, and for the schema of `DATA/outputs/benchmark.csv`.
+See [DATA.md](DATA.md) for the inventory of what is shipped here, what is archived on Zenodo, and what is regenerated by the pipeline, and for the schema of `DATA/outputs/benchmark.csv`.
+
+The court decisions come from [Judilibre](https://www.courdecassation.fr/acces-rapide-judilibre), the open-data API for French court decisions, under the Etalab Open Licence 2.0. They are pseudonymised at source.
+
+## Citation
+
+If you use this benchmark, code or model, please cite the paper:
+
+```bibtex
+@inproceedings{floro-etal-2026-experts,
+  title     = {Where Experts Disagree, Models Fail: Detecting Implicit Legal Citations in French Court Decisions},
+  author    = {Floro, Avrile and Dhorasoo, Tamara and Pellez, Soline and Holzenberger, Nils},
+  booktitle = {Proceedings of the Natural Legal Language Processing Workshop 2026},
+  year      = {2026},
+  publisher = {Association for Computational Linguistics},
+  eprint    = {2603.22973},
+  archivePrefix = {arXiv}
+}
+```
+
+The model and data archive can be cited as:
+
+```bibtex
+@dataset{floro_2026_zenodo,
+  title     = {Where Experts Disagree, Models Fail: model and datasets for detecting implicit legal citations in French court decisions},
+  author    = {Floro, Avrile and Dhorasoo, Tamara and Pellez, Soline and Holzenberger, Nils},
+  publisher = {Zenodo},
+  year      = {2026},
+  doi       = {10.5281/zenodo.21206799}
+}
+```
 
 ## License
 
-Released under the MIT License (see [LICENSE](LICENSE)).
+Code released under the MIT License (see [LICENSE](LICENSE)). Court decision texts are reused under the Etalab Open Licence 2.0.
