@@ -3,7 +3,7 @@
 **Avrile Floro**¹, **Tamara Dhorasoo**², **Soline Pellez**², **Nils Holzenberger**¹
 ¹ Télécom Paris, Institut Polytechnique de Paris · ² Université Polytechnique Hauts-de-France
 
-Natural Legal Language Processing Workshop (NLLP 2026) · [arXiv:2603.22973](https://arxiv.org/abs/2603.22973) · Model and data: [doi:10.5281/zenodo.21206799](https://doi.org/10.5281/zenodo.21206799)
+To be published at the Natural Legal Language Processing Workshop (NLLP 2026) · Preprint: [arXiv:2603.22973](https://arxiv.org/abs/2603.22973) · Model and data: [doi:10.5281/zenodo.21206799](https://doi.org/10.5281/zenodo.21206799)
 
 Data and code for the benchmark and experiments in the paper. We release **1,015 (chunk, article) pairs** (829 decisions, 418 French Civil Code articles) drawn from 182,155 first-instance civil decisions published on Judilibre (December 2023 to July 2025). A JuriBERT bi-encoder trained on *explicit* Civil Code citations retrieves 40,566 *implicit*-citation candidates; OpenAI o3, used as a conservative adversarial filter, accepts 4,206 of them, from which the 1,015 pairs were selected for annotation (§3). Two legal annotators (A1, A2) label every pair and a third (A3) adjudicates their 339 disagreements (§4).
 
@@ -100,14 +100,15 @@ The court decisions come from [Judilibre](https://www.courdecassation.fr/acces-r
 If you use this benchmark, code or model, please cite the paper:
 
 ```bibtex
-@inproceedings{floro-etal-2026-experts,
-  title     = {Where Experts Disagree, Models Fail: Detecting Implicit Legal Citations in French Court Decisions},
-  author    = {Floro, Avrile and Dhorasoo, Tamara and Pellez, Soline and Holzenberger, Nils},
-  booktitle = {Proceedings of the Natural Legal Language Processing Workshop 2026},
-  year      = {2026},
-  publisher = {Association for Computational Linguistics},
-  eprint    = {2603.22973},
-  archivePrefix = {arXiv}
+@misc{floro2026experts,
+  title         = {Where Experts Disagree, Models Fail: Detecting Implicit Legal Citations in French Court Decisions},
+  author        = {Floro, Avrile and Dhorasoo, Tamara and Pellez, Soline and Holzenberger, Nils},
+  year          = {2026},
+  eprint        = {2603.22973},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2603.22973},
+  note          = {To be published at the Natural Legal Language Processing Workshop (NLLP 2026)}
 }
 ```
 

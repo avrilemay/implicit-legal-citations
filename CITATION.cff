@@ -27,7 +27,7 @@ keywords:
   - implicit citation detection
   - annotator disagreement
 preferred-citation:
-  type: conference-paper
+  type: article
   title: "Where Experts Disagree, Models Fail: Detecting Implicit Legal Citations in French Court Decisions"
   authors:
     - family-names: Floro
@@ -38,11 +38,10 @@ preferred-citation:
       given-names: Soline
     - family-names: Holzenberger
       given-names: Nils
-  collection-title: "Proceedings of the Natural Legal Language Processing Workshop 2026"
-  publisher:
-    name: "Association for Computational Linguistics"
+  journal: "arXiv preprint arXiv:2603.22973"
   year: 2026
   identifiers:
     - type: other
       value: "arXiv:2603.22973"
   url: "https://arxiv.org/abs/2603.22973"
+  notes: "To be published at the Natural Legal Language Processing Workshop (NLLP 2026)"
